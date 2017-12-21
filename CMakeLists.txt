@@ -3,6 +3,13 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
+# Fix behavior of CMAKE_CXX_STANDARD when targeting macOS.
+if (POLICY CMP0025)
+  cmake_policy(SET CMP0025 NEW)
+endif ()
+
+set(CMAKE_CXX_STANDARD 11)
+
 project ("cppray")
 
 enable_testing()
