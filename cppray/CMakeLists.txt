@@ -14,4 +14,6 @@ add_executable (
     "SceneRenderer.cpp"
     "Vector3.h")
 
+target_link_libraries(cppray png_static zlibstatic)
+
 # TODO: Add tests and install targets if needed.

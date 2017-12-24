@@ -7,9 +7,10 @@
 #include <iostream>
 #include <iterator>
 
-void Render(const shared_ptr<RayTracer>& rayTracer,
-            const RayTraceRenderData& renderData,
-            const string& outputFilePath) {
+void Render(const shared_ptr<RayTracer> &rayTracer,
+            const RayTraceRenderData &renderData,
+            const string &outputFilePath)
+{
   PixelArray pixelArray(renderData.Width(), renderData.Height());
   SceneRenderer sceneRenderer;
 
@@ -17,7 +18,8 @@ void Render(const shared_ptr<RayTracer>& rayTracer,
                               renderData.MaxParallelism());
 }
 
-int main() {
+int main()
+{
   cout << "Hello CMake." << endl;
 
   // // boost sample

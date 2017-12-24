@@ -54,6 +54,28 @@ if(CMAKE_VERSION VERSION_LESS 2.8.11)
                         "${gmock_SOURCE_DIR}/include")
 endif()
 
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/deps)
+set(PNG_SHARED OFF CACHE BOOL "Disable PNG_SHARED")
+set(PNG_TESTS OFF CACHE BOOL "Disable PNG_TESTS")
+
+add_subdirectory(deps/zlib)
+set(ZLIB_ROOT "${CMAKE_SOURCE_DIR}/deps/zlib/")
+set(ZLIB_LIBRARY "${CMAKE_BINARY_DIR}/deps/zlib/${CMAKE_CFG_INTDIR}/zlibstatic${CMAKE_DEBUG_POSTFIX}.lib")
+include(FindZLIB)
+
+# zconf.h gets generated into cmake_current_binary_dir/deps/zlib
+include_directories(${ZLIB_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/deps/zlib")
+
+add_subdirectory(deps/libpng)
+set(PNG_LIBRARY "${CMAKE_BINARY_DIR}/deps/libpng/${CMAKE_CFG_INTDIR}/libpng16_static${CMAKE_DEBUG_POSTFIX}.lib")
+set(PNG_PNG_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/deps/libpng/")
+include(FindPNG)
+# pnglibconf.h gets generated into cmake_current_binary_dir/deps/libpnng
+include_directories(${PNG_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/deps/libpng")
+
+if (MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE)
+endif()
 
 # Include sub-projects.
 add_subdirectory("cppray")
