@@ -16,14 +16,14 @@ enable_testing()
 set(BUILD_TESTING, ON)
 
 # Set options used by "FindBoost.cmake".
-set (BOOST_ROOT "${CMAKE_SOURCE_DIR}/deps/boost/")
+# set (BOOST_ROOT "${CMAKE_SOURCE_DIR}/deps/boost/")
 set (Boost_NO_SYSTEM_PATHS ON)
 set (Boost_USE_MULTITHREADED ON)
 set (Boost_USE_STATIC_LIBS OFF)
 set (Boost_USE_STATIC_RUNTIME OFF)
 set (BOOST_ALL_DYN_LINK OFF)
 
-find_package (Boost 1.66.0)
+find_package (Boost)
 if (Boost_FOUND)
   include_directories (SYSTEM ${Boost_INCLUDE_DIR})
 endif ()
@@ -54,27 +54,32 @@ if(CMAKE_VERSION VERSION_LESS 2.8.11)
                         "${gmock_SOURCE_DIR}/include")
 endif()
 
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/deps)
-set(PNG_SHARED OFF CACHE BOOL "Disable PNG_SHARED")
-set(PNG_TESTS OFF CACHE BOOL "Disable PNG_TESTS")
+if (MSVC)
+    set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/deps)
+    set(PNG_SHARED OFF CACHE BOOL "Disable PNG_SHARED")
+    set(PNG_TESTS OFF CACHE BOOL "Disable PNG_TESTS")
 
-add_subdirectory(deps/zlib)
-set(ZLIB_ROOT "${CMAKE_SOURCE_DIR}/deps/zlib/")
-set(ZLIB_LIBRARY "${CMAKE_BINARY_DIR}/deps/zlib/${CMAKE_CFG_INTDIR}/zlibstatic${CMAKE_DEBUG_POSTFIX}.lib")
-include(FindZLIB)
+    add_subdirectory(deps/zlib)
+    set(ZLIB_ROOT "${CMAKE_SOURCE_DIR}/deps/zlib/")
+    set(ZLIB_LIBRARY "${CMAKE_BINARY_DIR}/deps/zlib/${CMAKE_CFG_INTDIR}/zlibstatic${CMAKE_DEBUG_POSTFIX}.lib")
+    include(FindZLIB)
 
-# zconf.h gets generated into cmake_current_binary_dir/deps/zlib
-include_directories(${ZLIB_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/deps/zlib")
+    # zconf.h gets generated into cmake_current_binary_dir/deps/zlib
+    include_directories(${ZLIB_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/deps/zlib")
 
-add_subdirectory(deps/libpng)
-set(PNG_LIBRARY "${CMAKE_BINARY_DIR}/deps/libpng/${CMAKE_CFG_INTDIR}/libpng16_static${CMAKE_DEBUG_POSTFIX}.lib")
-set(PNG_PNG_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/deps/libpng/")
-include(FindPNG)
-# pnglibconf.h gets generated into cmake_current_binary_dir/deps/libpnng
-include_directories(${PNG_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/deps/libpng")
-
+    add_subdirectory(deps/libpng)
+    set(PNG_LIBRARY "${CMAKE_BINARY_DIR}/deps/libpng/${CMAKE_CFG_INTDIR}/libpng16_static${CMAKE_DEBUG_POSTFIX}.lib")
+    set(PNG_PNG_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/deps/libpng/")
+    include(FindPNG)
+    # pnglibconf.h gets generated into cmake_current_binary_dir/deps/libpnng
+    include_directories(${PNG_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/deps/libpng")
+endif()
 if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE)
+endif()
+if (UNIX)
+    include(FindZLIB)
+    include(FindPNG)
 endif()
 
 # Include sub-projects.

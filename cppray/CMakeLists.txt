@@ -12,8 +12,16 @@ add_executable (
     "RayTracer.cpp"
     "RayTraceRenderData.cpp"
     "SceneRenderer.cpp"
-    "Vector3.h")
+    "Camera.cpp"
+    "Ray.cpp"
+    "Scene.cpp"
+    "Background.cpp"
+    "Shape.cpp"
+    "SceneFactory.cpp")
 
-target_link_libraries(cppray png_static zlibstatic)
-
-# TODO: Add tests and install targets if needed.
+if (MSVC)
+    target_link_libraries(cppray png_static zlibstatic)
+endif()
+if (UNIX)
+    target_link_libraries(cppray ${PNG_LIBRARY} ${ZLIB_LIBRARY})
+endif()

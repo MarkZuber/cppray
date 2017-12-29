@@ -2,24 +2,19 @@
 //
 
 #include "cppray.h"
-#include <algorithm>
 #include <boost/lambda/lambda.hpp>
-#include <iostream>
-#include <iterator>
 
-void Render(const shared_ptr<RayTracer> &rayTracer,
-            const RayTraceRenderData &renderData,
-            const string &outputFilePath)
-{
-  PixelArray pixelArray(renderData.Width(), renderData.Height());
+void Render(const shared_ptr<RayTracer>& rayTracer,
+            const shared_ptr<RayTraceRenderData>& renderData,
+            const string& outputFilePath) {
+  PixelArray pixelArray(renderData->Width(), renderData->Height());
   SceneRenderer sceneRenderer;
 
   sceneRenderer.RayTraceScene(rayTracer, pixelArray,
-                              renderData.MaxParallelism());
+                              renderData->MaxParallelism());
 }
 
-int main()
-{
+int main() {
   cout << "Hello CMake." << endl;
 
   // // boost sample
@@ -27,10 +22,8 @@ int main()
   // typedef std::istream_iterator<int> in;
   // std::for_each(in(std::cin), in(), std::cout << (_1 * 3) << " ");
 
-  Vector3<double> v(1.0, 2.0, 3.0);
-  cout << v << endl;
-  Vector3<double> v2 = v / 1.5;
-  cout << v2 << endl;
+  COLOR_VECTOR v = {1.0, 2.0, 3.0};
+  COLOR_VECTOR v2 = v / 1.5;
 
   string inputContentRoot = "../content/";
   string outputContentRoot = "../outputContent/";
@@ -38,13 +31,15 @@ int main()
 
   const int processorCount = 8;
 
-  RayTraceRenderData data(640, 640, 5, processorCount, inputContentRoot);
-  auto rayTracer = RayTracerFactory::CreateSimpleTracer(data);
+  auto renderData = make_shared<RayTraceRenderData>(640, 640, 5, processorCount,
+                                                    inputContentRoot);
+  auto scene = SceneFactory::CreateMarblesScene();
+  auto rayTracer = RayTracerFactory::CreateSimpleTracer(renderData, scene);
 
   // todo: path.combine to check for full path, ensure path separators, etc.
   string outputFilePath = outputContentRoot + "cppray.png";
 
-  Render(rayTracer, data, outputFilePath);
+  Render(rayTracer, renderData, outputFilePath);
 
   return 0;
 }
