@@ -27,6 +27,7 @@
 #include <boost/qvm/vec_operations.hpp>
 #include <boost/math/constants/constants.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/thread/thread.hpp>
 
 using namespace std;
 
@@ -342,5 +343,5 @@ class SceneRenderer
 public:
   SceneRenderer();
   void RayTraceScene(const shared_ptr<RayTracer> &rayTracer,
-                     PixelArray &pixelArray, int maxParallelism);
+                     const shared_ptr<PixelArray> &pixelArray, int maxParallelism);
 };

@@ -8,13 +8,13 @@ void Render(const shared_ptr<RayTracer> &rayTracer,
             const shared_ptr<RayTraceRenderData> &renderData,
             const string &outputFilePath)
 {
-  PixelArray pixelArray(renderData->Width(), renderData->Height());
+  auto pixelArray = make_shared<PixelArray>(renderData->Width(), renderData->Height());
   SceneRenderer sceneRenderer;
 
   sceneRenderer.RayTraceScene(rayTracer, pixelArray,
                               renderData->MaxParallelism());
 
-  pixelArray.SaveAsPng(outputFilePath);
+  pixelArray->SaveAsPng(outputFilePath);
 }
 
 int main()
@@ -25,7 +25,7 @@ int main()
 
   const int processorCount = 8;
 
-  auto renderData = make_shared<RayTraceRenderData>(640, 640, 5, processorCount,
+  auto renderData = make_shared<RayTraceRenderData>(900, 900, 5, processorCount,
                                                     inputContentRoot);
   auto scene = SceneFactory::CreateMarblesScene();
   auto rayTracer = RayTracerFactory::CreateSimpleTracer(renderData, scene);

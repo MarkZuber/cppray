@@ -20,8 +20,8 @@ add_executable (
     "SceneFactory.cpp")
 
 if (MSVC)
-    target_link_libraries(cppray png_static zlibstatic)
+    target_link_libraries(cppray png_static zlibstatic ${Boost_LIBRARIES})
 endif()
 if (UNIX)
-    target_link_libraries(cppray ${PNG_LIBRARY} ${ZLIB_LIBRARY})
+    target_link_libraries(cppray ${PNG_LIBRARY} ${ZLIB_LIBRARY} ${Boost_LIBRARIES})
 endif()

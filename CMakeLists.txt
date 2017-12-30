@@ -17,17 +17,26 @@ set(BUILD_TESTING, ON)
 
 # Set options used by "FindBoost.cmake".
 # set (BOOST_ROOT "${CMAKE_SOURCE_DIR}/deps/boost/")
+# set (BOOST_ROOT "/usr/local/")  // finds headers on macos
+set (Boost_INCLUDE_DIR "/usr/local/include/")
+set (Boost_LIBRARY_DIR "/usr/local/lib/")
 set (Boost_NO_SYSTEM_PATHS ON)
 set (Boost_USE_MULTITHREADED ON)
-set (Boost_USE_STATIC_LIBS OFF)
+set (Boost_USE_STATIC_LIBS ON)
 set (Boost_USE_STATIC_RUNTIME OFF)
 set (BOOST_ALL_DYN_LINK OFF)
+# set (Boost_DEBUG ON)
 
-find_package (Boost)
+find_package (Boost COMPONENTS system thread filesystem REQUIRED)
 if (Boost_FOUND)
   include_directories (SYSTEM ${Boost_INCLUDE_DIR})
+  link_directories(${Boost_LIBRARY_DIR})
+  message("WHOOOOP:  ${Boost_LIBRARIES}")
+else()
+    message("what the hell, no boost")
 endif ()
 
+add_definitions(-DBOOST_LOG_DYN_LINK=1)
 
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.gtest.in googletest-download/CMakeLists.txt)
