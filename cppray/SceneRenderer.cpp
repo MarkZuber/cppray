@@ -7,6 +7,12 @@ void ThreadRender(const shared_ptr<RayTracer> &rayTracer,
 {
   int startX = segment * segmentWidth;
   int endX = startX + segmentWidth - 1;
+
+  if (pixelArray->Width() - endX < segmentWidth)
+  {
+    endX = pixelArray->Width() - 1;
+  }
+
   // Console.WriteLine($ "starting segment {segment}. StartX ({startX})  EndX ({endX})");
   for (int i = startX; i <= endX; i++)
   {

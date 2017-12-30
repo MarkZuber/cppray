@@ -25,7 +25,7 @@ int main()
 
   const int processorCount = 8;
 
-  auto renderData = make_shared<RayTraceRenderData>(900, 900, 5, processorCount,
+  auto renderData = make_shared<RayTraceRenderData>(500, 500, 5, processorCount,
                                                     inputContentRoot);
   auto scene = SceneFactory::CreateMarblesScene();
   auto rayTracer = RayTracerFactory::CreateSimpleTracer(renderData, scene);
