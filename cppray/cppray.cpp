@@ -4,29 +4,28 @@
 #include "cppray.h"
 #include <boost/lambda/lambda.hpp>
 
-void Render(const shared_ptr<RayTracer>& rayTracer,
-            const shared_ptr<RayTraceRenderData>& renderData,
-            const string& outputFilePath) {
+void Render(const shared_ptr<RayTracer> &rayTracer,
+            const shared_ptr<RayTraceRenderData> &renderData,
+            const string &outputFilePath)
+{
   PixelArray pixelArray(renderData->Width(), renderData->Height());
   SceneRenderer sceneRenderer;
 
   sceneRenderer.RayTraceScene(rayTracer, pixelArray,
                               renderData->MaxParallelism());
+
+  pixelArray.SaveAsPng(outputFilePath);
 }
 
-int main() {
+int main()
+{
   cout << "Hello CMake." << endl;
-
-  // // boost sample
-  // using namespace boost::lambda;
-  // typedef std::istream_iterator<int> in;
-  // std::for_each(in(std::cin), in(), std::cout << (_1 * 3) << " ");
 
   COLOR_VECTOR v = {1.0, 2.0, 3.0};
   COLOR_VECTOR v2 = v / 1.5;
 
   string inputContentRoot = "../content/";
-  string outputContentRoot = "../outputContent/";
+  string outputContentRoot = "/Users/mzuber/repos/cppray/output/";
   // directory.CreateDirectory(outputContentRoot);
 
   const int processorCount = 8;

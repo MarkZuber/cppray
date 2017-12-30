@@ -19,3 +19,6 @@ build/
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
+
+.DS_Store
+output/

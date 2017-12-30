@@ -25,6 +25,7 @@
 #include <boost/qvm/vec.hpp>
 #include <boost/qvm/vec_access.hpp>
 #include <boost/qvm/vec_operations.hpp>
+#include <boost/math/constants/constants.hpp>
 
 using namespace std;
 
@@ -119,11 +120,28 @@ private:
   double _refraction;
   double _transparency;
 
+protected:
+  Material(double reflection, double transparency, double gloss, double refraction);
+
 public:
+  virtual COLOR_VECTOR GetColor(double u, double v) const = 0;
+  virtual bool HasTexture() const = 0;
   double Gloss() const;
   double Reflection() const;
   double Refraction() const;
   double Transparency() const;
+};
+
+class SolidMaterial : public Material
+{
+private:
+  COLOR_VECTOR _color;
+
+public:
+  SolidMaterial(const COLOR_VECTOR &color, double reflection, double transparency, double gloss, double refraction);
+
+  COLOR_VECTOR GetColor(double u, double v) const;
+  bool HasTexture() const;
 };
 
 class Light
@@ -133,11 +151,12 @@ private:
   POS_VECTOR _position;
 
 public:
+  Light(const POS_VECTOR &position, const COLOR_VECTOR &color);
   COLOR_VECTOR Color() const;
   POS_VECTOR Position() const;
 };
 
-class Shape
+class Shape : public std::enable_shared_from_this<Shape>
 {
 private:
   static int _nextId;
@@ -146,13 +165,24 @@ private:
   shared_ptr<Material> _material;
 
 protected:
-  Shape();
+  Shape(const POS_VECTOR &position, const shared_ptr<Material> &material);
 
 public:
   int Id() const;
-  virtual IntersectionInfo Intersect(const Ray &ray) = 0;
+  virtual shared_ptr<IntersectionInfo> Intersect(const Ray &ray) = 0;
   shared_ptr<Material> GetMaterial();
   POS_VECTOR Position() const;
+};
+
+class SphereShape : public Shape
+{
+private:
+  double _radius;
+
+public:
+  SphereShape(const POS_VECTOR &position, double radius, const shared_ptr<Material> &material);
+
+  shared_ptr<IntersectionInfo> Intersect(const Ray &ray);
 };
 
 class IntersectionInfo
@@ -170,16 +200,25 @@ public:
   IntersectionInfo();
 
   bool IsHit() const;
+  void SetIsHit(bool isHit);
+
   double Distance() const;
+  void SetDistance(double distance);
 
   POS_VECTOR Normal() const;
-  POS_VECTOR Position() const;
-  shared_ptr<Shape> Element();
-  COLOR_VECTOR Color() const;
+  void SetNormal(const POS_VECTOR &normal);
 
-  void SetDistance(double distance);
-  void SetHitCount(int hitCount);
+  POS_VECTOR Position() const;
+  void SetPosition(const POS_VECTOR &position);
+
+  shared_ptr<Shape> Element();
+  void SetElement(const shared_ptr<Shape> &shape);
+
+  COLOR_VECTOR Color() const;
   void SetColor(const COLOR_VECTOR &color);
+
+  int HitCount() const;
+  void SetHitCount(int hitCount);
 };
 
 class Scene
@@ -213,6 +252,9 @@ public:
   bool RenderShadow() const;
   int SamplingQuality() const;
 
+  void AddLight(const POS_VECTOR &position, const COLOR_VECTOR &color);
+  void AddShape(const shared_ptr<Shape> &shape);
+
   vector<shared_ptr<Shape>> Shapes();
   vector<shared_ptr<Light>> Lights();
 };
@@ -242,9 +284,9 @@ public:
 
 private:
   COLOR_VECTOR CalculateColor(const Ray &ray);
-  IntersectionInfo TestIntersection(const Ray &ray,
-                                    const shared_ptr<Shape> &exclude);
-  COLOR_VECTOR RayTrace(IntersectionInfo &info, const Ray &ray, int depth);
+  shared_ptr<IntersectionInfo> TestIntersection(const Ray &ray,
+                                                const shared_ptr<Shape> &exclude);
+  COLOR_VECTOR RayTrace(shared_ptr<IntersectionInfo> &info, const Ray &ray, int depth);
 
   Ray GetReflectionRay(const POS_VECTOR &p, const POS_VECTOR &n,
                        const POS_VECTOR &v);

@@ -1,8 +1,9 @@
 #include "cppray.h"
 
-Scene::Scene(const shared_ptr<Camera>& camera,
-             const shared_ptr<Background>& background)
-    : _camera(camera), _background(background) {
+Scene::Scene(const shared_ptr<Camera> &camera,
+             const shared_ptr<Background> &background)
+    : _camera(camera), _background(background)
+{
   _samplingQuality = 0;
   _renderDiffuse = true;
   _renderHighlights = true;
@@ -23,3 +24,14 @@ int Scene::SamplingQuality() const { return _samplingQuality; }
 vector<shared_ptr<Shape>> Scene::Shapes() { return _shapes; }
 
 vector<shared_ptr<Light>> Scene::Lights() { return _lights; }
+
+void Scene::AddLight(const POS_VECTOR &position, const COLOR_VECTOR &color)
+{
+  auto light = make_shared<Light>(position, color);
+  _lights.push_back(light);
+}
+
+void Scene::AddShape(const shared_ptr<Shape> &shape)
+{
+  _shapes.push_back(shape);
+}
