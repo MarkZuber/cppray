@@ -19,11 +19,6 @@ void Render(const shared_ptr<RayTracer> &rayTracer,
 
 int main()
 {
-  cout << "Hello CMake." << endl;
-
-  COLOR_VECTOR v = {1.0, 2.0, 3.0};
-  COLOR_VECTOR v2 = v / 1.5;
-
   string inputContentRoot = "../content/";
   string outputContentRoot = "/Users/mzuber/repos/cppray/output/";
   // directory.CreateDirectory(outputContentRoot);
@@ -38,7 +33,14 @@ int main()
   // todo: path.combine to check for full path, ensure path separators, etc.
   string outputFilePath = outputContentRoot + "cppray.png";
 
-  Render(rayTracer, renderData, outputFilePath);
+  cout << "starting rendering..." << endl;
 
+  auto start = boost::posix_time::microsec_clock::local_time();
+  Render(rayTracer, renderData, outputFilePath);
+  auto finish = boost::posix_time::microsec_clock::local_time();
+  boost::posix_time::time_duration diff = finish - start;
+  double totalMs = diff.total_milliseconds();
+
+  cout << "total render time: " << totalMs << "ms" << endl;
   return 0;
 }

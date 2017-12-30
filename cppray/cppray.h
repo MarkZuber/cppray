@@ -26,6 +26,7 @@
 #include <boost/qvm/vec_access.hpp>
 #include <boost/qvm/vec_operations.hpp>
 #include <boost/math/constants/constants.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 using namespace std;
 
@@ -124,6 +125,7 @@ private:
 
 protected:
   Material(double reflection, double transparency, double gloss, double refraction);
+  double WrapUp(double t) const;
 
 public:
   virtual COLOR_VECTOR GetColor(double u, double v) const = 0;
@@ -144,6 +146,27 @@ public:
 
   COLOR_VECTOR GetColor(double u, double v) const;
   bool HasTexture() const;
+};
+
+class ChessboardMaterial : public Material
+{
+private:
+  COLOR_VECTOR _colorEven;
+  COLOR_VECTOR _colorOdd;
+  double _density;
+
+public:
+  ChessboardMaterial(
+      const COLOR_VECTOR &coloreven,
+      const COLOR_VECTOR &colorodd,
+      double reflection,
+      double transparency,
+      double gloss,
+      double refraction,
+      double density);
+
+  bool HasTexture() const;
+  COLOR_VECTOR GetColor(double u, double v) const;
 };
 
 class Light
@@ -184,6 +207,16 @@ private:
 public:
   SphereShape(const POS_VECTOR &position, double radius, const shared_ptr<Material> &material);
 
+  shared_ptr<IntersectionInfo> Intersect(const Ray &ray);
+};
+
+class PlaneShape : public Shape
+{
+private:
+  double _d;
+
+public:
+  PlaneShape(const POS_VECTOR &position, double d, const shared_ptr<Material> &material);
   shared_ptr<IntersectionInfo> Intersect(const Ray &ray);
 };
 

@@ -38,5 +38,11 @@ void PixelArray::SetPixelColor(int x, int y, const COLOR_VECTOR &color)
 }
 void PixelArray::SaveAsPng(const string &outputFilePath)
 {
+  auto start = boost::posix_time::microsec_clock::local_time();
   boost::gil::png_write_view(outputFilePath.c_str(), const_view(_image));
+  auto finish = boost::posix_time::microsec_clock::local_time();
+  boost::posix_time::time_duration diff = finish - start;
+  double totalMs = diff.total_milliseconds();
+
+  cout << "total png save time: " << totalMs << "ms" << endl;
 }

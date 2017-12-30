@@ -89,3 +89,47 @@ shared_ptr<IntersectionInfo> SphereShape::Intersect(const Ray &ray)
     }
     return info;
 }
+
+PlaneShape::PlaneShape(const POS_VECTOR &position, double d, const shared_ptr<Material> &material)
+    : Shape(position, material), _d(d) {}
+
+shared_ptr<IntersectionInfo> PlaneShape::Intersect(const Ray &ray)
+{
+    shared_ptr<IntersectionInfo> info = make_shared<IntersectionInfo>();
+    double vd = dot(Position(), ray.Direction());
+    if (vd == 0.0)
+    {
+        return info; // no intersection
+    }
+
+    double t = -(dot(Position(), ray.Position()) + _d) / vd;
+
+    if (t <= 0)
+    {
+        return info;
+    }
+
+    info->SetElement(std::enable_shared_from_this<Shape>::shared_from_this());
+    info->SetIsHit(true);
+    info->SetPosition(ray.Position() + ray.Direction() * t);
+    info->SetNormal(Position()); // *-1;
+    info->SetDistance(t);
+    ;
+
+    if (GetMaterial()->HasTexture())
+    {
+        POS_VECTOR vecU = {X(Position()), Z(Position()), -X(Position())};
+        POS_VECTOR vecV = cross(vecU, Position());
+
+        double u = dot(info->Position(), vecU);
+        double v = dot(info->Position(), vecV);
+
+        info->SetColor(GetMaterial()->GetColor(u, v));
+    }
+    else
+    {
+        info->SetColor(GetMaterial()->GetColor(0.0, 0.0));
+    }
+
+    return info;
+}

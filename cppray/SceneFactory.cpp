@@ -23,16 +23,18 @@ shared_ptr<Scene> SceneFactory::CreateMarblesScene()
   auto solidMaterial = std::make_shared<SolidMaterial>((COLOR_VECTOR){0.0, 0.5, 0.5}, 0.2, 0.0, 2.0, 0.0);
   auto sphere1 = make_shared<SphereShape>((POS_VECTOR){-1.5, 0.5, 0.0}, 0.5, solidMaterial);
   scene->AddShape(sphere1);
-  // scene->Shapes.Add(new SphereShape(new Vector(-1.5, 0.5, 0), .5, new SolidMaterial(new Vector(0, .5, .5), 0.2, 0.0, 2.0)));
 
-  /*
   // setup sphere with a marble texture from an image
-  scene.Shapes.Add(new SphereShape(new Vector(0, 0, 0), 1, texture));
-  // scene.Shapes1.Add(new SphereShape(new Vector(0, 0, 0), 1, new SolidMaterial(new Vector(0.3, 0.0, 0.0), 0.7, 0.0, 3.0)));
+  auto solidMaterial2 = std::make_shared<SolidMaterial>((COLOR_VECTOR){0.7, 0.2, 0.1}, 0.3, 0.0, 2.0, 0.0);
+  auto sphere2 = make_shared<SphereShape>((POS_VECTOR){0.0, 0.0, 0.0}, 1, solidMaterial2);
+  scene->AddShape(sphere2);
 
   // setup the chessboard floor
-  scene.Shapes.Add(new PlaneShape(new Vector(0.1, 0.9, -0.5).Normalize(), 1.2, new ChessboardMaterial(new Vector(0.5, 0.5, 0.5), new Vector(0, 0, 0), 0.2, 0, 1, 0.7)));
-*/
+  auto chessboardMaterial = make_shared<ChessboardMaterial>((COLOR_VECTOR){0.5, 0.5, 0.5}, (COLOR_VECTOR){0.0, 0.0, 0.0}, 0.2, 0.0, 1.0, 0.0, 0.7);
+  POS_VECTOR planePos = {0.1, 0.9, -0.5};
+  boost::qvm::normalize(planePos);
+  auto plane1 = make_shared<PlaneShape>(planePos, 1.2, chessboardMaterial);
+  scene->AddShape(plane1);
 
   // add two lights for better lighting effects
   scene->AddLight((POS_VECTOR){5.0, 10.0, -1.0}, (COLOR_VECTOR){0.8, 0.8, 0.8});

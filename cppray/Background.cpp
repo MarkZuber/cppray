@@ -52,6 +52,28 @@ Material::Material(double reflection, double transparency, double gloss, double 
 {
 }
 
+/// <summary>
+/// wraps any value up in the inteval [-1,1] in a rotational manner
+/// e.g. 1.7 -> -0.3
+/// e.g. -1.1 -> 0.9
+/// e.g. -2.3 -> -0.3
+/// </summary>
+/// <param name="t"></param>
+/// <returns></returns>
+double Material::WrapUp(double t) const
+{
+    double q = fmod(t, 2.0);
+    if (q < -1)
+    {
+        q = q + 2.0;
+    }
+    if (q >= 1)
+    {
+        q -= 2.0;
+    }
+    return q;
+}
+
 SolidMaterial::SolidMaterial(const COLOR_VECTOR &color, double reflection, double transparency, double gloss, double refraction)
     : Material(reflection, transparency, gloss, refraction), _color(color) {}
 
@@ -63,4 +85,29 @@ COLOR_VECTOR SolidMaterial::GetColor(double u, double v) const
 bool SolidMaterial::HasTexture() const
 {
     return false;
+}
+
+ChessboardMaterial::ChessboardMaterial(
+    const COLOR_VECTOR &coloreven,
+    const COLOR_VECTOR &colorodd,
+    double reflection,
+    double transparency,
+    double gloss,
+    double refraction,
+    double density) : Material(reflection, transparency, gloss, refraction), _colorEven(coloreven), _colorOdd(colorodd), _density(density) {}
+
+bool ChessboardMaterial::HasTexture() const { return true; }
+
+COLOR_VECTOR ChessboardMaterial::GetColor(double u, double v) const
+{
+    double t = WrapUp(u) * WrapUp(v);
+
+    if (t < 0.0)
+    {
+        return _colorEven;
+    }
+    else
+    {
+        return _colorOdd;
+    }
 }
