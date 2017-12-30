@@ -32,12 +32,14 @@ using namespace std;
 #define COLOR_VECTOR boost::qvm::vec<double, 3>
 #define POS_VECTOR boost::qvm::vec<double, 3>
 
+typedef boost::gil::rgb8_image_t image_t;
+
 class PixelArray
 {
 private:
   int _width;
   int _height;
-  boost::gil::rgb8_image_t _image;
+  image_t _image;
 
 public:
   PixelArray(int width, int height);
