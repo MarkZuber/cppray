@@ -71,9 +71,35 @@ int main()
 
   const int processorCount = 8;
 
-  auto renderData = make_shared<RayTraceRenderData>(400, 400, 5, processorCount,
-                                                    inputContentRoot);
-  auto scene = SceneFactory::CreateMarblesScene();
+  const int width = 400;
+  const int height = 400;
+  const int rayTraceDepth = 5;
+
+  POS_VECTOR cameraPos = {60.0, 7.5, 150.0};
+  POS_VECTOR cameraLookAt = {-0.1, 0.1, 0.0};
+  POS_VECTOR cameraUp = {0.0, 0.0, 1.0};
+  double cameraFov = 50.0;
+  COLOR_VECTOR backgroundColor = {0.0, 0.0, 0.0};
+  double backgroundAmbience = 0.2;
+
+  double sphereRadius = 2.0;
+  double sphereDistanceIncrement = 4.0;
+  int numSpheresPerAxis = 10;
+
+  bool showPlane = true;
+  POS_VECTOR planePos = {1.0, 0.0, 0.0};
+  double planeDVal = 0.0;
+
+  auto renderData = make_shared<RayTraceRenderData>(
+      width, height, rayTraceDepth, processorCount, inputContentRoot);
+  // auto scene = SceneFactory::CreateMarblesScene();
+
+  auto scene = SceneFactory::CreateMarblesSceneWithParameters(
+      cameraPos, cameraLookAt, cameraUp, cameraFov,
+      backgroundColor, backgroundAmbience,
+      sphereRadius, sphereDistanceIncrement, numSpheresPerAxis,
+      showPlane, planePos, planeDVal);
+
   bool animation = false;
 
   if (animation)

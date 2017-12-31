@@ -308,6 +308,20 @@ class SceneFactory
 {
 public:
   static shared_ptr<Scene> CreateMarblesScene();
+
+  static shared_ptr<Scene> CreateMarblesSceneWithParameters(
+      const POS_VECTOR &cameraPos,
+      const POS_VECTOR &cameraLookAt,
+      const POS_VECTOR &cameraUp,
+      double cameraFov,
+      const COLOR_VECTOR &backgroundColor,
+      double backgroundAmbience,
+      double sphereRadius,
+      double sphereDistanceIncrement,
+      int numSpheresPerAxis,
+      bool showPlane,
+      const POS_VECTOR &planePos,
+      double planeDVal);
 };
 
 class RayTracer
