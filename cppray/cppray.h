@@ -99,19 +99,28 @@ public:
 class Camera
 {
 private:
-  POS_VECTOR _equator;
-  POS_VECTOR _lookAt;
+  POS_VECTOR _a1;
+  POS_VECTOR _a2;
+  POS_VECTOR _a3;
   POS_VECTOR _position;
-  POS_VECTOR _screen;
   POS_VECTOR _up;
+  POS_VECTOR _lookAt;
+  double _viewAngleDegrees;
+  double _dval;
 
 public:
-  Camera(const POS_VECTOR &position, const POS_VECTOR &lookAt);
-  Camera(const POS_VECTOR &position, const POS_VECTOR &lookAt,
-         const POS_VECTOR &up);
+  Camera(
+      const POS_VECTOR &position,
+      const POS_VECTOR &lookAt,
+      const POS_VECTOR &up,
+      double viewAngleDegrees);
 
   Ray GetRay(double vx, double vy) const;
   POS_VECTOR GetPosition() const;
+  void SetPosition(const POS_VECTOR &position);
+
+private:
+  void PrecalcEyeVectors();
 };
 
 class IntersectionInfo;

@@ -50,6 +50,28 @@ void SceneRenderer::RayTraceScene(const shared_ptr<RayTracer> &rayTracer,
         pixelArray->SetPixelColor(x, y, colorVector);
       }
       // cout << "y = " << y << endl << flush;
+
+      /*
+      trying this to update the info to include aspect ratio and such, but it renders a green image...
+int ht = pixelArray->Height();
+    int htover2 = ht / 2;
+    int wd = pixelArray->Width();
+    int wdover2 = wd / 2;
+
+    double vinc = 2.0 / ((double)ht - 1); // * aspectratio
+    double uinc = 2.0 / ((double)wd - 1);
+
+    for (int y = htover2; y > -htover2; y--)
+    {
+      double v = y * vinc;
+      for (int x = -wdover2; x < wdover2; x++)
+      {
+        double u = x * uinc;
+
+        auto colorVector = rayTracer->GetPixelColor(u, v);
+        pixelArray->SetPixelColor(x + wdover2, -y + htover2, colorVector);
+      }
+    }      */
     }
     // cout << endl << flush;
   }
