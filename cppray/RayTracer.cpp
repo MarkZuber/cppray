@@ -197,13 +197,6 @@ COLOR_VECTOR SimpleRayTracer::RayTrace(shared_ptr<IntersectionInfo> &info, const
   return color;
 }
 
-/* static */ shared_ptr<RayTracer> RayTracerFactory::CreateSimpleTracer(
-    const shared_ptr<RayTraceRenderData> &renderData,
-    const shared_ptr<Scene> &scene)
-{
-  return make_shared<SimpleRayTracer>(renderData, scene);
-}
-
 Ray SimpleRayTracer::GetReflectionRay(const POS_VECTOR &p, const POS_VECTOR &n,
                                       const POS_VECTOR &v)
 {

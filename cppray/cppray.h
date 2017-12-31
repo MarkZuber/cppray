@@ -339,18 +339,40 @@ private:
                        const POS_VECTOR &v, double refraction);
 };
 
-class RayTracerFactory
-{
-public:
-  static shared_ptr<RayTracer> CreateSimpleTracer(
-      const shared_ptr<RayTraceRenderData> &renderData,
-      const shared_ptr<Scene> &scene);
-};
-
 class SceneRenderer
 {
 public:
   SceneRenderer();
+
+  shared_ptr<PixelArray> RenderScene(
+      const shared_ptr<RayTraceRenderData> &renderData,
+      const shared_ptr<Scene> &scene);
+
+private:
   void RayTraceScene(const shared_ptr<RayTracer> &rayTracer,
                      const shared_ptr<PixelArray> &pixelArray, int maxParallelism);
+
+  void RenderSingleThreaded(
+      const shared_ptr<RayTracer> &rayTracer,
+      shared_ptr<PixelArray> &pixelArray);
+
+  void RenderMultithreaded(
+      const shared_ptr<RayTracer> &rayTracer,
+      shared_ptr<PixelArray> &pixelArray,
+      int maxParallelism);
+};
+
+class LogTimer
+{
+private:
+  string _prefixMessage;
+  boost::posix_time::ptime _startTime;
+  boost::posix_time::ptime GetTimeStamp();
+
+public:
+  LogTimer(const string &prefixMessage);
+  ~LogTimer();
+
+protected:
+  virtual void LogResult(double totalMilliseconds);
 };

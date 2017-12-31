@@ -4,36 +4,21 @@
 #include "cppray.h"
 #include <boost/lambda/lambda.hpp>
 
-void Render(const shared_ptr<RayTracer> &rayTracer,
-            const shared_ptr<RayTraceRenderData> &renderData,
-            const string &outputFilePath)
-{
-  auto pixelArray = make_shared<PixelArray>(renderData->Width(), renderData->Height());
-  SceneRenderer sceneRenderer;
-
-  sceneRenderer.RayTraceScene(rayTracer, pixelArray,
-                              renderData->MaxParallelism());
-
-  pixelArray->SaveAsPng(outputFilePath);
-}
-
-void RenderFrame(const shared_ptr<RayTracer> &rayTracer,
-                 const shared_ptr<RayTraceRenderData> &renderData,
+void RenderFrame(const shared_ptr<RayTraceRenderData> &renderData,
+                 const shared_ptr<Scene> &scene,
                  const string &outputFilePath)
 {
-  auto start = boost::posix_time::microsec_clock::local_time();
-  Render(rayTracer, renderData, outputFilePath);
-  auto finish = boost::posix_time::microsec_clock::local_time();
-  boost::posix_time::time_duration diff = finish - start;
-  double totalMs = diff.total_milliseconds();
-
-  cout << "total render time: " << totalMs << "ms" << endl;
+  {
+    LogTimer renderResult("total render time: ");
+    SceneRenderer sceneRenderer;
+    auto pixelArray = sceneRenderer.RenderScene(renderData, scene);
+    pixelArray->SaveAsPng(outputFilePath);
+  }
 }
 
 void RenderAnimation(
-    const shared_ptr<Scene> &scene,
-    const shared_ptr<RayTracer> &rayTracer,
     const shared_ptr<RayTraceRenderData> &renderData,
+    const shared_ptr<Scene> &scene,
     const string &outputContentRoot)
 {
   int numFrames = 60;
@@ -74,7 +59,7 @@ For θ=0 this gives a circle in the xy plane, and for θ=π/2 the circle lies in
     scene->GetCamera()->SetPosition(cameraPos);
 
     cout << "starting rendering..." << i << endl;
-    RenderFrame(rayTracer, renderData, outputFilePath);
+    RenderFrame(renderData, scene, outputFilePath);
   }
 }
 
@@ -89,18 +74,16 @@ int main()
   auto renderData = make_shared<RayTraceRenderData>(400, 400, 5, processorCount,
                                                     inputContentRoot);
   auto scene = SceneFactory::CreateMarblesScene();
-  auto rayTracer = RayTracerFactory::CreateSimpleTracer(renderData, scene);
-
   bool animation = false;
 
   if (animation)
   {
-    RenderAnimation(scene, rayTracer, renderData, outputContentRoot);
+    RenderAnimation(renderData, scene, outputContentRoot);
   }
   else
   {
     string outputFilePath = outputContentRoot + "cppray.png";
-    RenderFrame(rayTracer, renderData, outputFilePath);
+    RenderFrame(renderData, scene, outputFilePath);
   }
 
   return 0;

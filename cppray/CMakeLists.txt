@@ -17,7 +17,8 @@ add_executable (
     "Scene.cpp"
     "Background.cpp"
     "Shape.cpp"
-    "SceneFactory.cpp")
+    "SceneFactory.cpp"
+    "LogTimer.cpp")
 
 if (MSVC)
     target_link_libraries(cppray png_static zlibstatic ${Boost_LIBRARIES})
