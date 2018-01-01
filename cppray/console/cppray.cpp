@@ -63,6 +63,42 @@ For θ=0 this gives a circle in the xy plane, and for θ=π/2 the circle lies in
   }
 }
 
+shared_ptr<PixelArray> ParameterizedSceneRender(
+    int processorCount,
+    int width,
+    int height,
+    int rayTraceDepth,
+    const POS_VECTOR &cameraPos,
+    const POS_VECTOR &cameraLookAt,
+    const POS_VECTOR &cameraUp,
+    double cameraFov,
+    const COLOR_VECTOR &backgroundColor,
+    double backgroundAmbience,
+    double sphereRadius,
+    double sphereDistanceIncrement,
+    int numSpheresPerAxis,
+    bool showPlane,
+    const POS_VECTOR &planePos,
+    double planeDVal)
+{
+  auto renderData = make_shared<RayTraceRenderData>(
+      width, height, rayTraceDepth, processorCount, "");
+  // auto scene = SceneFactory::CreateMarblesScene();
+
+  auto scene = SceneFactory::CreateMarblesSceneWithParameters(
+      cameraPos, cameraLookAt, cameraUp, cameraFov,
+      backgroundColor, backgroundAmbience,
+      sphereRadius, sphereDistanceIncrement, numSpheresPerAxis,
+      showPlane, planePos, planeDVal);
+
+  {
+    LogTimer renderResult("total render time: ");
+    SceneRenderer sceneRenderer;
+    auto pixelArray = sceneRenderer.RenderScene(renderData, scene);
+    return pixelArray;
+  }
+}
+
 int main()
 {
   string inputContentRoot = "../content/";
