@@ -5,8 +5,7 @@
 #include <boost/lambda/lambda.hpp>
 
 void RenderFrame(const shared_ptr<RayTraceRenderData> &renderData,
-                 const shared_ptr<Scene> &scene,
-                 const string &outputFilePath)
+                 const shared_ptr<Scene> &scene, const string &outputFilePath)
 {
   {
     LogTimer renderResult("total render time: ");
@@ -16,10 +15,9 @@ void RenderFrame(const shared_ptr<RayTraceRenderData> &renderData,
   }
 }
 
-void RenderAnimation(
-    const shared_ptr<RayTraceRenderData> &renderData,
-    const shared_ptr<Scene> &scene,
-    const string &outputContentRoot)
+void RenderAnimation(const shared_ptr<RayTraceRenderData> &renderData,
+                     const shared_ptr<Scene> &scene,
+                     const string &outputContentRoot)
 {
   int numFrames = 60;
   double cameraRadius = 15.0;
@@ -35,16 +33,19 @@ void RenderAnimation(
     // string outputFilePath = outputContentRoot + "cppray.png";
 
     /*
-You can simply rotate your setup: let ϕ∈[0,2π] parametrize your circle like you did, but use θ∈[0,π2] to describe the rotation of your plane. Then you can use
+You can simply rotate your setup: let ϕ∈[0,2π] parametrize your circle like you
+did, but use θ∈[0,π2] to describe the rotation of your plane. Then you can use
 
 x=rcosϕcosθ
 y=rsinϕ
 z=rcosϕsinθ
 
-For θ=0 this gives a circle in the xy plane, and for θ=π/2 the circle lies in the zy plane.    */
+For θ=0 this gives a circle in the xy plane, and for θ=π/2 the circle lies in
+the zy plane.    */
 
     double currentAngleDegrees = tickAngleDegrees * (i - 1);
-    double phi = currentAngleDegrees * boost::math::constants::pi<double>() / 180;
+    double phi =
+        currentAngleDegrees * boost::math::constants::pi<double>() / 180;
     double x = cameraRadius * cos(phi) * cos(theta);
     double y = cameraRadius * sin(phi);
     double z = -cameraRadius; // cameraRadius * cos(phi) * sin(theta);
@@ -60,42 +61,6 @@ For θ=0 this gives a circle in the xy plane, and for θ=π/2 the circle lies in
 
     cout << "starting rendering..." << i << endl;
     RenderFrame(renderData, scene, outputFilePath);
-  }
-}
-
-shared_ptr<PixelArray> ParameterizedSceneRender(
-    int processorCount,
-    int width,
-    int height,
-    int rayTraceDepth,
-    const POS_VECTOR &cameraPos,
-    const POS_VECTOR &cameraLookAt,
-    const POS_VECTOR &cameraUp,
-    double cameraFov,
-    const COLOR_VECTOR &backgroundColor,
-    double backgroundAmbience,
-    double sphereRadius,
-    double sphereDistanceIncrement,
-    int numSpheresPerAxis,
-    bool showPlane,
-    const POS_VECTOR &planePos,
-    double planeDVal)
-{
-  auto renderData = make_shared<RayTraceRenderData>(
-      width, height, rayTraceDepth, processorCount, "");
-  // auto scene = SceneFactory::CreateMarblesScene();
-
-  auto scene = SceneFactory::CreateMarblesSceneWithParameters(
-      cameraPos, cameraLookAt, cameraUp, cameraFov,
-      backgroundColor, backgroundAmbience,
-      sphereRadius, sphereDistanceIncrement, numSpheresPerAxis,
-      showPlane, planePos, planeDVal);
-
-  {
-    LogTimer renderResult("total render time: ");
-    SceneRenderer sceneRenderer;
-    auto pixelArray = sceneRenderer.RenderScene(renderData, scene);
-    return pixelArray;
   }
 }
 
@@ -131,10 +96,9 @@ int main()
   // auto scene = SceneFactory::CreateMarblesScene();
 
   auto scene = SceneFactory::CreateMarblesSceneWithParameters(
-      cameraPos, cameraLookAt, cameraUp, cameraFov,
-      backgroundColor, backgroundAmbience,
-      sphereRadius, sphereDistanceIncrement, numSpheresPerAxis,
-      showPlane, planePos, planeDVal);
+      cameraPos, cameraLookAt, cameraUp, cameraFov, backgroundColor,
+      backgroundAmbience, sphereRadius, sphereDistanceIncrement,
+      numSpheresPerAxis, showPlane, planePos, planeDVal);
 
   bool animation = false;
 

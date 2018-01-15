@@ -49,6 +49,7 @@ public:
   int Height() const;
   void SetPixelColor(int x, int y, const COLOR_VECTOR &color);
   void SaveAsPng(const string &outputFilePath);
+  image_t GetImage();
 };
 
 class RayTraceRenderData

@@ -40,6 +40,12 @@ void PixelArray::SaveAsPng(const string &outputFilePath)
 {
   {
     LogTimer saveTime("total png save time: ");
+    cout << "saving: " << outputFilePath << endl;
     boost::gil::png_write_view(outputFilePath.c_str(), const_view(_image));
   }
+}
+
+image_t PixelArray::GetImage()
+{
+  return _image;
 }
