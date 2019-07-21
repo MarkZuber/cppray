@@ -15,28 +15,49 @@ project ("cppray")
 enable_testing()
 set(BUILD_TESTING, ON)
 
+set (Boost_NO_SYSTEM_PATHS ON)
+set (Boost_USE_MULTITHREADED ON)
+set (Boost_USE_STATIC_LIBS OFF CACHE BOOL "use static libraries from Boost")
+set (Boost_USE_STATIC_RUNTIME OFF)
+set (Boost_DEBUG ON)
+
 # Set options used by "FindBoost.cmake".
 # set (BOOST_ROOT "${CMAKE_SOURCE_DIR}/deps/boost/")
 # set (BOOST_ROOT "/usr/local/")  // finds headers on macos
-set (Boost_INCLUDE_DIR "/usr/local/include/")
-set (Boost_LIBRARY_DIR "/usr/local/lib/")
-set (Boost_NO_SYSTEM_PATHS ON)
-set (Boost_USE_MULTITHREADED ON)
-set (Boost_USE_STATIC_LIBS ON)
-set (Boost_USE_STATIC_RUNTIME OFF)
-set (BOOST_ALL_DYN_LINK OFF)
-# set (Boost_DEBUG ON)
+if (UNIX)
+    set (Boost_INCLUDE_DIR "/usr/local/include/")
+    set (Boost_LIBRARY_DIR "/usr/local/lib/")
+elseif(MSVC)
+    set (BOOST_ROOT "C:/local/boost_1_66_0/")
+    set (BOOST_LIBRARYDIR "C:/local/boost_1_66_0/")
+    set (BOOST_INCLUDEDIR "C:/local/boost_1_66_0/")
+    add_definitions( -DBOOST_ALL_NO_LIB )
+    # set (Boost_LIBRARY_DIRS "C:/local/boost_1_66_0/lib64-msvc-14.1/")
+    # set (Boost_LIBRARY_DIRS "c:/local/boost_1_66_0/libs/")
+endif()
 
-find_package (Boost COMPONENTS system thread filesystem REQUIRED)
+find_package (Boost REQUIRED COMPONENTS system thread filesystem date_time chrono timer)
 if (Boost_FOUND)
-  include_directories (SYSTEM ${Boost_INCLUDE_DIR})
+  include_directories(${Boost_INCLUDE_DIR})
   link_directories(${Boost_LIBRARY_DIR})
+  link_libraries(${Boost_LIBRARIES})
   message("WHOOOOP:  ${Boost_LIBRARIES}")
 else()
     message("what the hell, no boost")
 endif ()
 
-add_definitions(-DBOOST_LOG_DYN_LINK=1)
+if (Win32)
+    # disable autolinking in boost
+  add_definitions( -DBOOST_ALL_NO_LIB )
+
+  # force all boost libraries to dynamic link (we already disabled
+  # autolinking, so I don't know why we need this, but we do!)
+  add_definitions( -DBOOST_ALL_DYN_LINK )
+
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4576")
+
+endif()
+# add_definitions(-DBOOST_LOG_DYN_LINK=1)
 
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.gtest.in googletest-download/CMakeLists.txt)

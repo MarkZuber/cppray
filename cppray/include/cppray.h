@@ -389,7 +389,7 @@ public:
   ~LogTimer();
 
 protected:
-  virtual void LogResult(double totalMilliseconds);
+  virtual void LogResult(int64_t totalMilliseconds);
 };
 
 shared_ptr<PixelArray> ParameterizedSceneRender(

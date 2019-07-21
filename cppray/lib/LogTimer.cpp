@@ -15,11 +15,11 @@ LogTimer::~LogTimer()
 {
     auto finish = GetTimeStamp();
     boost::posix_time::time_duration diff = finish - _startTime;
-    double totalMs = diff.total_milliseconds();
+    int64_t totalMs = diff.total_milliseconds();
     LogResult(totalMs);
 }
 
-void LogTimer::LogResult(double totalMilliseconds)
+void LogTimer::LogResult(int64_t totalMilliseconds)
 {
     cout << _prefixMessage << totalMilliseconds << "ms" << endl;
 }

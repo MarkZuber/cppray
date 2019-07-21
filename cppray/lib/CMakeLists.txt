@@ -19,6 +19,7 @@ add_library(
     "LogTimer.cpp")
 
 if (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4576")
     target_link_libraries(cppraylib png_static zlibstatic ${Boost_LIBRARIES})
 endif()
 if (UNIX)
